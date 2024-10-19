@@ -5,6 +5,8 @@ import (
 	"log"
 	"sort"
 
+	"github.com/oalshaik/Lem-in/ants"
+	"github.com/oalshaik/Lem-in/graph"
 	"github.com/oalshaik/Lem-in/parse"
 )
 
@@ -23,40 +25,53 @@ func main() {
 
 	// Separate start, end, and normal rooms
 	var startRoom, endRoom string
-	for name := range rooms {
+	for name, room := range rooms {
 		if name == "##start" {
-			startRoom = name
+			startRoom = room.Name // Map to the actual start room name
 		} else if name == "##end" {
-			endRoom = name
+			endRoom = room.Name // Map to the actual end room name
 		} else {
 			roomNames = append(roomNames, name)
 		}
 	}
 
-	// Sort the normal rooms alphabetically (you could customize this sorting logic if needed)
+	// Sort the normal rooms alphabetically
 	sort.Strings(roomNames)
 
 	fmt.Println("Rooms:")
-	// Print start room first (if it exists)
 	if startRoom != "" {
 		room := rooms[startRoom]
 		fmt.Printf("Room %s at coordinates (%d, %d)\n", room.Name, room.X, room.Y)
 	}
-
-	// Print all other rooms in alphabetical order
 	for _, roomName := range roomNames {
 		room := rooms[roomName]
 		fmt.Printf("Room %s at coordinates (%d, %d)\n", room.Name, room.X, room.Y)
 	}
-
-	// Print end room last (if it exists)
 	if endRoom != "" {
 		room := rooms[endRoom]
 		fmt.Printf("Room %s at coordinates (%d, %d)\n", room.Name, room.X, room.Y)
 	}
 
-	fmt.Println("Tunnels:")
+	// Create the graph representation
+	colonyGraph := graph.NewGraph()
+
+	// Add tunnels (edges) to the graph
 	for _, tunnel := range tunnels {
-		fmt.Printf("Tunnel between %s and %s\n", tunnel[0], tunnel[1])
+		room1, room2 := tunnel[0], tunnel[1]
+		colonyGraph.AddEdge(room1, room2)
+	}
+
+	fmt.Println("Tunnels (Graph):")
+	colonyGraph.DisplayGraph()
+
+	// Find multiple paths from start to end
+	maxPaths := 10 // Adjust if needed
+	paths := colonyGraph.FindPaths(startRoom, endRoom, maxPaths)
+
+	if len(paths) == 0 {
+		fmt.Println("No path found from start to end.")
+	} else {
+		fmt.Println("Found paths:", paths)
+		ants.MoveAntsDynamically(numAnts, paths) // Use the dynamic ant movement
 	}
 }

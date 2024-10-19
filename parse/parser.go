@@ -68,13 +68,11 @@ func ParseFile(filename string) (int, map[string]Room, [][2]string, error) {
 			rooms[name] = Room{Name: name, X: x, Y: y}
 
 			if startRoom == "start" {
-				rooms["##start"] = Room{Name: "##start", X: x, Y: y}
-				delete(rooms, name)
-				startRoom = ""
+				startRoom = name
+				rooms["##start"] = Room{Name: name, X: x, Y: y}
 			} else if endRoom == "end" {
-				rooms["##end"] = Room{Name: "##end", X: x, Y: y}
-				delete(rooms, name)
-				endRoom = ""
+				endRoom = name
+				rooms["##end"] = Room{Name: name, X: x, Y: y}
 			}
 
 			continue
