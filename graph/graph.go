@@ -57,9 +57,6 @@ func (g *Graph) BFS(start, end string) ([]string, bool) {
 	return nil, false
 }
 
-// FindPaths performs a modified BFS to find multiple shortest paths from start to end
-// FindPaths performs a modified BFS to find multiple shortest paths from start to end
-// FindPaths performs a modified BFS to find multiple shortest paths from start to end
 func (g *Graph) FindPaths(start, end string, maxPaths int) [][]string {
 	paths := [][]string{}
 	queue := [][]string{{start}}
